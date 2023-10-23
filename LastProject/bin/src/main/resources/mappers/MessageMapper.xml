@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ws.model.dao.MessageDao">
+	<resultMap type="Message" id="messageMap">
+		<result column="msgSeq" property="msgSeq" />
+		<result column="msgToId" property="msgToId" />
+		<result column="msgFromId" property="msgFromId" />
+		<result column="msgContent" property="msgContent" />
+		<result column="messageReportState" property="messageReportState" />
+		<result column="msgReadCheck" property="msgReadCheck" />
+	</resultMap>
+
+	<!-- 게시판 작성 -->
+	<insert id="MessageReply" parameterType="Article">
+		<!-- seq는 autoIncrease니까 insert할 때 직접 넣지 않는다. -->
+		<!-- articleCreatedAt는 default값 설정으로 할꺼니까 insert할 때 직접 넣지 않는다. -->
+		insert into message(msgToId,
+		msgFromId,msgContent)
+		values (#{msgToId},
+		#{msgFromId},#{msgContent});
+	</insert>
+
+	<insert id="YouAreBadUser"
+		parameterType="com.ssafy.ws.model.dto.User">
+
+		<!-- seq는 autoIncrease니까 insert할 때 직접 넣지 않는다. -->
+
+
+		<!-- articleCreatedAt는 default값 설정으로 할꺼니까 insert할 때 직접 넣지 않는다. -->
+
+		insert into message(msgToId,msgFromId,msgContent)values
+		(#{userId},"관리자","당신은 불량 유저입니다.");
+	</insert>
+
+
+	<!-- 전체 조회 -->
+	<select id="MessageList" parameterType="String"
+		resultType="Message">
+		<!-- 전체 리스트 조회 -->
+		SELECT *
+		FROM message
+		where msgToId=#{msgToId}
+
+	</select>
+
+
+	<!-- seq로 하나 조회 -->
+	<select id="MessageDetail" parameterType="int"
+		resultMap="messageMap">
+		<!-- seq가 같은 친구의 전체를 보여주겠다. -->
+		SELECT *
+		FROM message
+		WHERE msgSeq = #{msgSeq};
+	</select>
+
+	<!-- 게시판 수정 -->
+	<update id="MessageReport" parameterType="Message">
+		UPDATE message
+		SET
+		<!-- seq는 pk이므로 수정하지 않는다. -->
+		messageReportState=#{messageReportState}
+		WHERE msgSeq = #{msgSeq}
+	</update>
+
+	<!-- 게시글 삭제 -->
+	<delete id="MessageDelete" parameterType="int">
+		<!-- seq같은 녀석 날려버리기 -->
+		DELETE FROM message
+		WHERE
+		msgSeq =
+		#{msgSeq}
+	</delete>
+	
+	<update id="MessageRead" parameterType="int">UPDATE message SET msgReadCheck =true where
+		msgSeq=#{msgSeq} </update>
+
+</mapper>

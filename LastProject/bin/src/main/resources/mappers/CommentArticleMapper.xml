@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ws.model.dao.CommentArticleDao">
+	<resultMap type="CommentArticle" id="CommentArticleMap">
+		<result column="commentSeq" property="commentSeq" />
+		<result column="commentArticleSeq" property="commentArticleSeq" />
+		<result column="commentUserId" property="commentUserId" />
+		<result column="commentContent" property="commentContent" />
+		<result column="commentJoinedAt" property="commentJoinedAt" />
+	</resultMap>
+
+	<!-- 게시판 작성 -->
+	<insert id="CommentArticleWrite" parameterType="CommentArticle">
+		<!-- seq는 autoIncrease니까 insert할 때 직접 넣지 않는다. -->
+		<!-- articleCreatedAt는 default값 설정으로 할꺼니까 insert할 때 직접 넣지 않는다. -->
+		insert into commentArticles(commentArticleSeq,
+		commentUserId,commentContent)
+		values (#{commentArticleSeq},
+		#{commentUserId},#{commentContent});
+	</insert>
+
+
+	<!-- 전체 조회 -->
+	<select id="CommentArticleList" parameterType="int" resultType="CommentArticle">
+		<!-- 전체 리스트 조회 -->
+		SELECT *
+		FROM commentArticles
+		WHERE commentArticleSeq=#{commentArticleSeq}
+	</select>
+
+
+	<!-- seq로 하나 조회 -->
+	<select id="CommentArticleSelectOne" parameterType="int"
+		resultMap="CommentArticleMap">
+		<!-- seq가 같은 친구의 전체를 보여주겠다. -->
+		SELECT *
+		FROM commentArticles
+		WHERE commentSeq = #{commentSeq};
+	</select>
+
+	<!-- 게시판 수정 -->
+	<update id="CommentArticleUpdate" parameterType="CommentArticle">
+		UPDATE commentArticles
+		SET
+		<!-- seq는 pk이므로 수정하지 않는다. -->
+		<!-- 댓글은 내용만 수정하면 됨 => 어차피 로그인한 사용자만 접근 가능 하므로 -->
+		commentContent=#{commentContent}
+		where commentSeq=#{commentSeq}
+	</update>
+
+	<!-- 게시글 삭제 -->
+	<delete id="CommentArticleDelete" parameterType="int">
+		<!-- seq같은 녀석 날려버리기 -->
+		DELETE FROM commentArticles
+		WHERE
+		commentSeq =
+		#{commentSeq}
+	</delete>
+
+</mapper>

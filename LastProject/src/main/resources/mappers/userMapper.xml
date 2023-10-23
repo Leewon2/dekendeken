@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ws.model.dao.UserDao">
+
+
+	<select id="userList" resultType="com.ssafy.ws.model.dto.User">
+		SELECT *
+		FROM user;
+	</select>
+
+	<select id="userNeighbors" parameterType="String"
+		resultType="com.ssafy.ws.model.dto.User">
+		SELECT *
+		FROM user
+		WHERE userAdress = #{userAdress};
+	</select>
+
+
+	<select id="userDetail" parameterType="int"
+		resultType="com.ssafy.ws.model.dto.User">
+		SELECT *
+		FROM user
+		WHERE userSeq = #{userSeq};
+	</select>
+	
+	<select id="userDetail2" parameterType="String"
+		resultType="com.ssafy.ws.model.dto.User">
+		SELECT *
+		FROM user
+		WHERE userId = #{userId};
+	</select>
+
+	<select id="userGetPocketmon" parameterType="int"
+		resultType="com.ssafy.ws.model.dto.Poketmon">
+		SELECT *
+		FROM pokectmon
+		WHERE pokectmonGroup = #{pokectmonGroup};
+	</select>
+
+	<select id="userRevolutionPocketmon" parameterType="String"
+		resultType="com.ssafy.ws.model.dto.Poketmon">
+		SELECT pokectmonName2 as pokectmonName, uploadPath2 as uploadPath
+		FROM pokectmon
+		WHERE pokectmonName = #{pokectmonName};
+	</select>
+
+
+	<insert id="userSignup"
+		parameterType='com.ssafy.ws.model.dto.User'>
+		INSERT INTO user(userId, userPwd, userName, userNickname, userEmail,
+		userAdress,userInterestBigSport,userInterestSmallSport,userSex,userAge,userHeight,userWeight,userExcerciseGoal,userPokectmonName,userPokectmonUrl,userPokectmonGroup)
+		VALUES(#{userId}, #{userPwd}, #{userName}, #{userNickname},
+		#{userEmail},
+		#{userAdress},#{userInterestBigSport},#{userInterestSmallSport},#{userSex},#{userAge},#{userHeight},#{userWeight},#{userExcerciseGoal},#{userPokectmonName},#{userPokectmonUrl},#{userPokectmonGroup})
+	</insert>
+
+
+	<select id="userLogin"
+		parameterType="com.ssafy.ws.model.dto.User"
+		resultType="com.ssafy.ws.model.dto.User">
+		SELECT *
+		FROM user
+		WHERE userId = #{userId} AND userPwd = #{userPwd}
+	</select>
+
+	<select id="userCheckId" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM user
+		WHERE userId = #{userId}
+	</select>
+
+	<select id="userCheckNickname" parameterType="String"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM user
+		WHERE userNickname = #{userNickname}
+	</select>
+
+	<update id="userUpdateCal"
+		parameterType="com.ssafy.ws.model.dto.User">
+		UPDATE user
+		SET userTotalCalorie =
+		userTotalCalorie+#{userTotalCalorie}
+		WHERE userSeq = #{userSeq}
+
+	</update>
+
+	<update id="userUpdatePocketmon"
+		parameterType="com.ssafy.ws.model.dto.User">
+		UPDATE user
+		SET userPokectmonName = #{userPokectmonName},
+		userPokectmonUrl = #{userPokectmonUrl},
+		userDayCalorie = 2
+		WHERE userSeq = #{userSeq};
+	</update>
+
+	<update id="userUpdate"
+		parameterType="com.ssafy.ws.model.dto.User">
+		UPDATE user
+		SET userPwd = #{userPwd}, 
+		userName = #{userName}, 
+		userNickname = #{userNickname},
+		userAdress = #{userAdress}, 
+		userInterestBigSport = #{userInterestBigSport},
+		userInterestSmallSport = #{userInterestSmallSport},
+		userHeight = #{userHeight}, 
+		userWeight = #{userWeight}, 
+		userAge = #{userAge},
+		userSex = #{userSex},
+		userExcerciseGoal = #{userExcerciseGoal}
+		WHERE userSeq = #{userSeq}
+	</update>
+
+	<update id="badScoreUpdate"
+		parameterType="com.ssafy.ws.model.dto.User">UPDATE user SET userWarning = userWarning+1 where
+		userId=#{userId} </update>
+
+	<update id="YouCannotUseMessageAnymore"
+		parameterType="com.ssafy.ws.model.dto.User">UPDATE user SET userBooleanMsg = true where
+		userId=#{userId} </update>
+	
+
+</mapper>

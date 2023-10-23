@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ws.model.dao.LikeDao">
+	<resultMap type="Like" id="LikeMap">
+		<result column="likeSeq" property="likeSeq" />
+		<result column="likeUserId" property="likeUserId" />
+		<result column="likeVideoSeq" property="likeVideoSeq" />
+	</resultMap>
+
+	<!-- 좋아요 등록 -->
+	<insert id="LikeRegist" parameterType="Like">
+	<!-- Id는 loginUser가 될꺼고, videoseq는 현재 보고있는 videoseq가 된다. -->
+		insert into likeVideos(likeUserId,
+		likeVideoSeq)
+		values (#{likeUserId},
+		#{likeVideoSeq});
+	</insert>
+
+
+	<!-- 로그인한 유저가 좋아요를 누른 비디오 리스트 -->
+	<select id="LikeUserList" parameterType="String" resultType="Like">
+		
+		SELECT *
+		FROM likeVideos
+		WHERE likeUserId = #{likeUserId};
+	</select>
+
+
+	<!-- 하나의 비디오에 눌린 좋아요 갯수 -->
+	<select id="LikeVideoList" parameterType="int"
+		resultType="Like">
+		<!-- seq가 같은 친구의 전체를 보여주겠다. -->
+		SELECT *
+		FROM likeVideos
+		WHERE likeVideoSeq = #{likeVideoSeq};
+	</select>
+
+	<insert id="LikeVideoInsert" parameterType="Like">
+		<!-- seq가 같은 친구의 전체를 보여주겠다. -->
+		INSERT INTO likeVideos(likeUserId,likeVideoSeq)
+		VALUES (#{likeUserId},#{likeVideoSeq})
+	</insert>
+	
+	<delete id="LikeVideoDelete" parameterType="Like">
+		<!-- seq같은 녀석 날려버리기 -->
+		DELETE FROM likeVideos
+		WHERE
+		likeUserId =
+		#{likeUserId} AND likeVideoSeq=#{likeVideoSeq}
+	</delete>
+	
+	<select id="LikeVideoSelectOne" parameterType="Like"
+		resultType="Like">
+		<!-- seq가 같은 친구의 전체를 보여주겠다. -->
+		SELECT *
+		FROM likeVideos
+		WHERE likeUserId =
+		#{likeUserId} AND likeVideoSeq=#{likeVideoSeq}
+	</select>
+	
+
+</mapper>

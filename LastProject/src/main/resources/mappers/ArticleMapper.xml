@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ws.model.dao.ArticleDao">
+	<resultMap type="Article" id="articleMap">
+		<result column="articleSeq" property="articleSeq" />
+		<result column="articleWriter" property="articleWriter" />
+		<result column="articleTitle" property="articleTitle" />
+		<result column="articleContent" property="articleContent" />
+		<result column="articleCreatedAt" property="articleCreatedAt" />
+		<result column="articleViewCnt" property="articleViewCnt" />
+	</resultMap>
+
+	<!-- 게시판 작성 -->
+	<insert id="ArticleWrite" parameterType="Article">
+		<!-- seq는 autoIncrease니까 insert할 때 직접 넣지 않는다. -->
+		<!-- articleCreatedAt는 default값 설정으로 할꺼니까 insert할 때 직접 넣지 않는다. -->
+		insert into article(articleWriter,
+		articleTitle,articleContent,articleViewCnt)
+		values (#{articleWriter},
+		#{articleTitle},#{articleContent},#{articleViewCnt});
+	</insert>
+
+	<!-- 제목으로 검색 -->
+	<select id="ArticleSearchByTitle"
+		parameterType="SearchCondition" resultType="Article">
+		<!-- word가 들어간 친구를 보여주겠다. -->
+		SELECT *
+		FROM article
+		WHERE articleTitle LIKE concat('%', #{word}, '%')
+	</select>
+
+	<!-- 전체 조회 -->
+	<select id="ArticleList" resultType="Article">
+		<!-- 전체 리스트 조회 -->
+		SELECT *
+		FROM article
+		
+	</select>
+
+
+	<!-- seq로 하나 조회 -->
+	<select id="ArticleSelectOne" parameterType="int"
+		resultMap="articleMap">
+		<!-- seq가 같은 친구의 전체를 보여주겠다. -->
+		SELECT *
+		FROM article
+		WHERE articleSeq = #{articleSeq};
+	</select>
+
+	<!-- 게시판 수정 -->
+	<update id="ArticleUpdate" parameterType="Article">
+		UPDATE article
+		SET
+		<!-- seq는 pk이므로 수정하지 않는다. -->
+		articleWriter=#{articleWriter},
+		articleTitle=#{articleTitle},
+		articleContent=#{articleContent},
+		articleViewCnt=#{articleViewCnt}
+		WHERE articleSeq = #{articleSeq}
+	</update>
+
+	<!-- 게시글 삭제 -->
+	<delete id="ArticleDelete" parameterType="int">
+		<!-- seq같은 녀석 날려버리기 -->
+		DELETE FROM article
+		WHERE
+		articleSeq =
+		#{articleSeq}
+	</delete>
+
+</mapper>
